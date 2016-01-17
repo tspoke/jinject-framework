@@ -8,7 +8,5 @@ package com.jinject.context.api;
 public interface IContext {
 	void start();
 	
-	void destroy();
-	
 	Object register(Object o);
 }

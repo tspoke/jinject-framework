@@ -19,9 +19,4 @@ public class ContextImpl extends AbstractContext {
 	public void start() {
 		
 	}
-
-	@Override
-	public void destroy() {
-		
-	}
 }

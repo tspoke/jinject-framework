@@ -8,6 +8,7 @@ import com.jinject.bind.exception.BindingResolverException;
 import com.jinject.bind.impl.Binder;
 import com.jinject.utils.IModel;
 import com.jinject.utils.Model;
+import com.jinject.utils.MyEnum;
 import com.jinject.utils.ShipModel;
 
 public class BindingSystemTest {
@@ -170,5 +171,24 @@ public class BindingSystemTest {
 
 		binder.bind(IModel.class).to(A).toName("A").lock();
 		binder.bind(IModel.class).to(ShipModel.class); // locked : exception
+	}
+
+	@Test
+	public void bindByEnumToString() throws InstantiationException, IllegalAccessException, BindingResolverException{
+		IBinder binder = new Binder();
+
+		Model A = new Model();
+		A.setValue(100);
+		A.str = "A";
+
+		binder.bind(IModel.class).to(A).toName(MyEnum.A.toString());
+		
+		Model BB = (Model) binder.getBinding(IModel.class, MyEnum.A.toString());
+		Assert.assertEquals(BB.getValue(), 100);
+	}
+
+	@Test
+	public void bindByEnum() throws InstantiationException, IllegalAccessException, BindingResolverException {
+		
 	}
 }
