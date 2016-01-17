@@ -1,4 +1,4 @@
-package com.jinject.bind.model;
+package com.jinject.utils;
 
 public interface IOther {
 	int getValue();

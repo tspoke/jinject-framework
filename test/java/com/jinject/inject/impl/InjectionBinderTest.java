@@ -1,23 +1,22 @@
-package com.jinject.bind.impl;
+package com.jinject.inject.impl;
 
 import org.junit.Assert;
 import org.junit.Test;
 
 import com.jinject.bind.exception.BindingResolverException;
-import com.jinject.bind.model.Controller;
-import com.jinject.bind.model.IModel;
-import com.jinject.bind.model.IOther;
-import com.jinject.bind.model.Model;
-import com.jinject.bind.model.Other;
 import com.jinject.inject.api.IInjector;
-import com.jinject.inject.impl.InjectionBinder;
-import com.jinject.inject.impl.Injector;
+import com.jinject.reflect.impl.Reflector;
+import com.jinject.utils.Controller;
+import com.jinject.utils.IModel;
+import com.jinject.utils.IOther;
+import com.jinject.utils.Model;
+import com.jinject.utils.Other;
 
 public class InjectionBinderTest {
 	
 	@Test
 	public void differentReferenceOnInjectedObject() throws InstantiationException, IllegalArgumentException, IllegalAccessException, BindingResolverException{
-		IInjector injector = new Injector();
+		IInjector injector = new Injector(new Reflector());
 		InjectionBinder injectionBinder = new InjectionBinder(injector);
 		
 		injectionBinder.bind(IOther.class).to(Other.class);
@@ -34,7 +33,7 @@ public class InjectionBinderTest {
 	
 	@Test
 	public void bind(){
-		IInjector injector = new Injector();
+		IInjector injector = new Injector(new Reflector());
 		InjectionBinder injectionBinder = new InjectionBinder(injector);
 		
 		injectionBinder.bind(IOther.class).to(Other.class);
@@ -47,19 +46,20 @@ public class InjectionBinderTest {
 	
 	@Test
 	public void bindInvertDependencies(){
-		IInjector injector = new Injector();
+		IInjector injector = new Injector(new Reflector());
 		InjectionBinder injectionBinder = new InjectionBinder(injector);
 
-		injectionBinder.bind(IModel.class).to(Model.class);
 		injectionBinder.bind(IOther.class).to(Other.class);
+		injectionBinder.bind(IModel.class).to(Model.class);
 		IModel model = injectionBinder.getInstance(IModel.class);
-		
+
 		Assert.assertEquals(model.getValue(), 0);
+		Assert.assertEquals(model.getOther().getValue(), 0);
 	}
 	
 	@Test(expected=IllegalStateException.class)
 	public void unbind(){
-		IInjector injector = new Injector();
+		IInjector injector = new Injector(new Reflector());
 		InjectionBinder injectionBinder = new InjectionBinder(injector);
 		
 		injectionBinder.bind(IOther.class).to(Other.class);
@@ -70,7 +70,7 @@ public class InjectionBinderTest {
 	
 	@Test(expected=IllegalStateException.class)
 	public void unbindByName(){
-		IInjector injector = new Injector();
+		IInjector injector = new Injector(new Reflector());
 		InjectionBinder injectionBinder = new InjectionBinder(injector);
 		
 		injectionBinder.bind(IOther.class).to(Other.class);

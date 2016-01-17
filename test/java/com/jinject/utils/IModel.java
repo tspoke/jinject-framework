@@ -1,4 +1,4 @@
-package com.jinject.bind.model;
+package com.jinject.utils;
 
 public interface IModel {
 	int getValue();

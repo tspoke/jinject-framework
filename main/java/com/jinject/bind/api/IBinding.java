@@ -1,5 +1,7 @@
 package com.jinject.bind.api;
 
+import java.util.Map;
+
 import com.jinject.bind.exception.BindingResolverException;
 
 /**
@@ -8,13 +10,26 @@ import com.jinject.bind.exception.BindingResolverException;
  *
  */
 public interface IBinding {
-
+	
+	/**
+	 * Bind to an instance or value
+	 * @param value
+	 * @return
+	 */
+	IBinding to(Object value);
+	
 	/**
 	 * Bind the last binding to an object
 	 * @param name
 	 * @return
 	 */
 	IBinding toName(String name);
+	
+	/**
+	 * Lock the binding. This method gives you the capacity to protect instances.
+	 * @return
+	 */
+	IBinding lock();
 	
 	/**
 	 * Get the binding for this identifier
@@ -36,11 +51,10 @@ public interface IBinding {
 	Object getBinding() throws BindingResolverException, InstantiationException, IllegalAccessException;
 	
 	/**
-	 * Bind to an instance or value
-	 * @param value
+	 * Get all bindings for this IBinding object
 	 * @return
 	 */
-	IBinding to(Object value);
+	Map<String, Object> getBindings();
 
 	/**
 	 * Unbind the default binding

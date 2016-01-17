@@ -1,14 +1,16 @@
 package com.jinject.inject.impl;
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
 import com.jinject.bind.api.IBinder;
 import com.jinject.bind.exception.BindingResolverException;
 import com.jinject.inject.api.IInjector;
-import com.jinject.inject.api.Inject;
+import com.jinject.reflect.api.IReflector;
 
 /**
  * Inject, to an instance, values from a binder or from a existing mapping
@@ -22,54 +24,26 @@ public class Injector implements IInjector {
 	 */
 	private Map<Class<?>, InjectorBindingMapper> mappers;
 	
-	public Injector() {
+	/**
+	 *Reflector used to reflect classes
+	 */
+	private final IReflector reflector;
+	
+	
+	public Injector(IReflector reflector) {
 		mappers = new HashMap<>();
+		this.reflector = reflector;
 	}
 	
-	
-	@Override
-	public InjectorBindingMapper reflectClass(Class<?> clazz, IBinder binder) throws InstantiationException, IllegalAccessException, BindingResolverException {
-		if(mappers.containsKey(clazz))
-			return mappers.get(clazz);
-		
-		Field[] fields = clazz.getDeclaredFields();
-		InjectorBindingMapper injectorBinding = new InjectorBindingMapper(clazz);
-		for(Field f : fields){
-			Inject injectNotation = f.getDeclaredAnnotation(Inject.class);
-			if(injectNotation != null){
-				String bindToName = null;
-				if (injectNotation.value().equals(""))
-					bindToName = null;
-				else
-					bindToName = injectNotation.value();
-				
-				Object binding = null;
-				try {
-					binding = binder.getBinding(f.getType(), bindToName);
-					if(binding instanceof Class)
-						reflectClass((Class<?>) binding, binder);
-					else
-						reflectClass(binding.getClass(), binder);
-					
-					injectorBinding.addBinding(f, binding);
-				}
-				catch(BindingResolverException e){
-					throw new BindingResolverException("There is no binding for [" + f.getType() + "]. You probably forget to add it to the binder.");
-				}
-				catch(ClassCastException e){
-					throw new BindingResolverException("Looks like a cast gone bad : " + f.getType() + " => " + e.getMessage());
-				}
-			}
-		}
-		mappers.put(clazz, injectorBinding);
-		return injectorBinding;
-	}
-
 
 	@Override
-	public void inject(Object instance, InjectorBindingMapper mapper) throws IllegalArgumentException, IllegalAccessException, InstantiationException {
+	public List<Object> inject(Object instance, InjectorBindingMapper mapper) throws IllegalArgumentException, IllegalAccessException, InstantiationException {
+		if(!mappers.containsKey(instance.getClass()))
+			mappers.put(instance.getClass(), mapper);
+
 		Map<Field, Object> mapping = mapper.getBindingsForFields();
 		
+		List<Object> instancesInjected = new ArrayList<>();
 		for(Entry<Field, Object> f : mapping.entrySet()){
 			Object expected = f.getValue();
 			Object toBind = null;
@@ -79,15 +53,26 @@ public class Injector implements IInjector {
 			else 
 				toBind = expected;
 			
-			inject(toBind); // recursive injection
+			instancesInjected.add(toBind);
 			f.getKey().set(instance, toBind);
 		}
+		return instancesInjected;
 	}
 	
 	@Override
 	public InjectorBindingMapper inject(Object instance, IBinder binder) throws InstantiationException, BindingResolverException, IllegalArgumentException, IllegalAccessException {
-		InjectorBindingMapper injectorBinding = reflectClass(instance.getClass(), binder);
-		inject(instance, injectorBinding);
+		InjectorBindingMapper injectorBinding = null;
+		Class<?> clazz = instance.getClass();
+		
+		if(mappers.containsKey(clazz))
+			injectorBinding = mappers.get(clazz);
+		else 
+			injectorBinding = reflector.reflectClass(instance.getClass(), binder);
+		
+		List<Object> instancesInjected = inject(instance, injectorBinding);
+		for(Object i : instancesInjected){
+			inject(i, binder); // we ensure that all sub instance have been injected too
+		}
 		return injectorBinding;
 	}
 	
@@ -95,9 +80,19 @@ public class Injector implements IInjector {
 	public void inject(Object instance) throws IllegalArgumentException, IllegalAccessException, InstantiationException{
 		InjectorBindingMapper injectorBinding = mappers.get(instance.getClass());
 		if(injectorBinding == null)
-			throw new IllegalArgumentException("The injector can't determine the mapper to inject in this object. Consider calling reflectClass() before");
+			throw new IllegalArgumentException("The injector can't determine the mapper to inject in this object ["+instance.getClass()+"]. Consider calling the (Object, IBinder) version instead.");
 		
 		inject(instance, injectorBinding);
+	}
+
+
+	@Override
+	public boolean register(Class<?> o, IBinder binder) throws InstantiationException, IllegalAccessException, BindingResolverException {
+		if(mappers.containsKey(o))
+			return false;
+		
+		mappers.put((Class<?>)o, reflector.reflectClass((Class<?>) o, binder));
+		return true;
 	}
 	
 }

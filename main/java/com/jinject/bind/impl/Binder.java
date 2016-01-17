@@ -9,7 +9,7 @@ import com.jinject.bind.exception.BindingResolverException;
 
 public class Binder implements IBinder {
 	
-	private Map<Class<?>, IBinding> bindings;
+	protected Map<Class<?>, IBinding> bindings;
 	
 	public Binder() {
 		bindings = new HashMap<>();
@@ -39,6 +39,7 @@ public class Binder implements IBinder {
 		bindings.put(key, binding);
 		return binding;
 	}
+	
 
 	@Override
 	public void unbindAll(Class<?> key) {

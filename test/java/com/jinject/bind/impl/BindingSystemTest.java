@@ -6,9 +6,9 @@ import org.junit.Test;
 import com.jinject.bind.api.IBinder;
 import com.jinject.bind.exception.BindingResolverException;
 import com.jinject.bind.impl.Binder;
-import com.jinject.bind.model.IModel;
-import com.jinject.bind.model.Model;
-import com.jinject.bind.model.ShipModel;
+import com.jinject.utils.IModel;
+import com.jinject.utils.Model;
+import com.jinject.utils.ShipModel;
 
 public class BindingSystemTest {
 
@@ -137,5 +137,38 @@ public class BindingSystemTest {
 		Assert.assertEquals(AA.getValue(), 100);
 		Assert.assertEquals(BB.getValue(), 200);
 		Assert.assertEquals(CC.getValue(), 200);
+	}
+
+
+	@Test
+	public void changeNamedBinding() throws InstantiationException, IllegalAccessException, BindingResolverException{
+		IBinder binder = new Binder();
+
+		Model A = new Model();
+		A.setValue(100);
+		A.str = "A";
+		
+		Model B = new Model();
+		B.setValue(200);
+		B.str = "B";
+
+		binder.bind(IModel.class).to(A).toName("A");
+		binder.bind(IModel.class).to(B).toName("A");
+		
+		Model BB = (Model) binder.getBinding(IModel.class, "A");
+
+		Assert.assertEquals(BB.getValue(), 200);
+	}
+
+	@Test(expected=ExceptionInInitializerError.class)
+	public void locked(){
+		IBinder binder = new Binder();
+
+		Model A = new Model();
+		A.setValue(100);
+		A.str = "A";
+
+		binder.bind(IModel.class).to(A).toName("A").lock();
+		binder.bind(IModel.class).to(ShipModel.class); // locked : exception
 	}
 }

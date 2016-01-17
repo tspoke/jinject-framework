@@ -28,4 +28,10 @@ public interface IInjectionBinder {
 	 * @throws BindingResolverException
 	 */
 	<T> T getInstance(Class<T> key);
+	
+	/**
+	 * Register an object and inject its dependencies
+	 * @return the same object injected
+	 */
+	Object register(Object o);
 }

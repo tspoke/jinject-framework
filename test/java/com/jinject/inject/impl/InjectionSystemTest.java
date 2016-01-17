@@ -1,4 +1,4 @@
-package com.jinject.bind.impl;
+package com.jinject.inject.impl;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -6,20 +6,20 @@ import org.junit.Test;
 import com.jinject.bind.api.IBinder;
 import com.jinject.bind.exception.BindingResolverException;
 import com.jinject.bind.impl.Binder;
-import com.jinject.bind.model.Controller;
-import com.jinject.bind.model.IModel;
-import com.jinject.bind.model.IOther;
-import com.jinject.bind.model.Model;
-import com.jinject.bind.model.Other;
 import com.jinject.inject.api.IInjector;
-import com.jinject.inject.impl.Injector;
+import com.jinject.reflect.impl.Reflector;
+import com.jinject.utils.Controller;
+import com.jinject.utils.IModel;
+import com.jinject.utils.IOther;
+import com.jinject.utils.Model;
+import com.jinject.utils.Other;
 
 public class InjectionSystemTest {
 	
 	@Test
 	public void basicInjection() throws InstantiationException, IllegalArgumentException, IllegalAccessException, BindingResolverException{
 		IBinder binder = new Binder();
-		IInjector injector = new Injector();
+		IInjector injector = new Injector(new Reflector());
 
 		Model model = new Model();
 		model.setValue(155);
@@ -39,7 +39,7 @@ public class InjectionSystemTest {
 	@Test
 	public void fastInjection() throws InstantiationException, IllegalArgumentException, IllegalAccessException, BindingResolverException{
 		IBinder binder = new Binder();
-		IInjector injector = new Injector();
+		IInjector injector = new Injector(new Reflector());
 
 		Model model = new Model();
 		model.setValue(155);
