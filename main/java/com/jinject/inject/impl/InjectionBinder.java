@@ -38,7 +38,7 @@ public class InjectionBinder extends Binder implements IInjectionBinder {
 		// reflectBindings(lastBinding);
 		
 		lastBinding = super.bind(key);
-		reflect(key);
+		// reflect(key); // Improve performance but this call force to write bindings in the right order... it's painful :D
 		return lastBinding;
 	}
 	
@@ -69,7 +69,7 @@ public class InjectionBinder extends Binder implements IInjectionBinder {
 			injector.register(clazz, this);
 		}
 		catch (InstantiationException | IllegalAccessException | BindingResolverException e) {
-			throw new IllegalStateException("The given class leaded to a reflection error : " + clazz + ". Initial error : " + e.getMessage());
+			throw new IllegalStateException("The given class leaded to an injection error : " + clazz + ". Initial error : " + e.getMessage());
 		}
 	}
 

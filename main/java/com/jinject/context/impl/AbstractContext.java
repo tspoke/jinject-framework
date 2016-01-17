@@ -17,8 +17,8 @@ public abstract class AbstractContext implements IContext {
 		injectionBinder = new InjectionBinder(new Injector(new Reflector()));
 		injectionBinder.bind(InjectionBinder.class).to(injectionBinder).lock();
 		
-		start();
 		setupBindings();
+		start();
 	}
 
 	@Override

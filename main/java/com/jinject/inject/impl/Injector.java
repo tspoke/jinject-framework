@@ -59,6 +59,7 @@ public class Injector implements IInjector {
 		return instancesInjected;
 	}
 	
+	
 	@Override
 	public InjectorBindingMapper inject(Object instance, IBinder binder) throws InstantiationException, BindingResolverException, IllegalArgumentException, IllegalAccessException {
 		InjectorBindingMapper injectorBinding = null;
