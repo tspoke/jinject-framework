@@ -68,7 +68,7 @@ public class MyTestClass {
   public IOtherObject otherObject; // new object instance
   
   @Inject("NAMED")
-  public IOtherObject otherObject; // injected by value, always the same object accros all instances
+  public IOtherObject otherObject; // injected by value, always the same object accross all instances
 }
 
 
