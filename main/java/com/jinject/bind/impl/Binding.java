@@ -7,12 +7,12 @@ import com.jinject.bind.api.IBinding;
 import com.jinject.bind.exception.BindingResolverException;
 
 public class Binding implements IBinding {
-	private Class<?> key;
+	private Object key;
 	private boolean locked = false;
-	private Map<String, Object> bindings;
+	private Map<Object, Object> bindings; // name, value
 	private Object temporary;
 	
-	public Binding(Class<?> k) {
+	public Binding(Object k) {
 		key = k;
 		bindings = new HashMap<>();
 	}
@@ -21,8 +21,6 @@ public class Binding implements IBinding {
 	public IBinding to(Object o) {
 		if(locked)
 			throw new ExceptionInInitializerError("This binding is locked !");
-		if((o instanceof Class && !key.isAssignableFrom((Class<?>) o)) || (!(o instanceof Class) && !key.isInstance(o)))
-			throw new ExceptionInInitializerError("You can't bind an object or a class who is not a subtype or a type of the binding key");
 		
 		if(temporary != null)
 			bindings.put(null, temporary);
@@ -35,7 +33,7 @@ public class Binding implements IBinding {
 
 
 	@Override
-	public IBinding toName(String name) {
+	public IBinding toName(Object name) {
 		if(temporary == null)
 			throw new ExceptionInInitializerError("There is no object bind to this key. Please use to() before toName()");
 
@@ -55,7 +53,7 @@ public class Binding implements IBinding {
 
 
 	@Override
-	public Object getBinding(String name) throws BindingResolverException, InstantiationException, IllegalAccessException {
+	public Object getBinding(Object name) throws BindingResolverException, InstantiationException, IllegalAccessException {
 		if(bindings.containsKey(name) && bindings.get(name) != null)
 			return bindings.get(name);
 		else
@@ -63,7 +61,7 @@ public class Binding implements IBinding {
 	}
 
 	@Override
-	public Map<String, Object> getBindings() {
+	public Map<Object, Object> getBindings() {
 		return bindings;
 	}
 
@@ -80,7 +78,7 @@ public class Binding implements IBinding {
 	}
 
 	@Override
-	public IBinding unbind(String name) {
+	public IBinding unbind(Object name) {
 		bindings.remove(name);
 		return this;
 	}

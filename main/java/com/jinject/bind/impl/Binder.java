@@ -9,29 +9,29 @@ import com.jinject.bind.exception.BindingResolverException;
 
 public class Binder implements IBinder {
 	
-	protected Map<Class<?>, IBinding> bindings;
+	protected Map<Object, IBinding> bindings;
 	
 	public Binder() {
 		bindings = new HashMap<>();
 	}
 	
 	@Override
-	public Object getBinding(Class<?> key) throws InstantiationException, IllegalAccessException, BindingResolverException {
+	public Object getBinding(Object key) throws InstantiationException, IllegalAccessException, BindingResolverException {
 		return getBinding(key, null);
 	}
 
 	@Override
-	public Object getBinding(Class<?> key, String name) throws InstantiationException, IllegalAccessException, BindingResolverException {
+	public Object getBinding(Object key, Object name) throws InstantiationException, IllegalAccessException, BindingResolverException {
 		return resolveBinding(key).getBinding(name);
 	}
 
 	@Override
-	public IBinding bind(Class<?> key) {
+	public IBinding bind(Object key) {
 		IBinding binding = resolveBinding(key);
 		return binding;
 	}
 	
-	private IBinding resolveBinding(Class<?> key){
+	private IBinding resolveBinding(Object key){
 		if(bindings.containsKey(key))
 			return bindings.get(key);
 		
@@ -42,17 +42,17 @@ public class Binder implements IBinder {
 	
 
 	@Override
-	public void unbindAll(Class<?> key) {
+	public void unbindAll(Object key) {
 		resolveBinding(key).unbindAll();
 	}
 
 	@Override
-	public void unbind(Class<?> key) {
+	public void unbind(Object key) {
 		resolveBinding(key).unbind();
 	}
 
 	@Override
-	public void unbind(Class<?> key, String name) {
+	public void unbind(Object key, Object name) {
 		resolveBinding(key).unbind(name);
 	}
 }

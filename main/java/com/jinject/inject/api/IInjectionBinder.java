@@ -17,8 +17,8 @@ public interface IInjectionBinder {
 	 * @throws IllegalAccessException
 	 * @throws BindingResolverException
 	 */
-	<T> T getInstance(Class<T> key, String name);
-	
+	Object getInstance(Object key, Object name);
+
 	/**
 	 * 
 	 * @param key
@@ -27,7 +27,8 @@ public interface IInjectionBinder {
 	 * @throws IllegalAccessException
 	 * @throws BindingResolverException
 	 */
-	<T> T getInstance(Class<T> key);
+	Object getInstance(Object key);
+
 	
 	/**
 	 * Register an object and inject its dependencies

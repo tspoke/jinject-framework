@@ -188,7 +188,67 @@ public class BindingSystemTest {
 	}
 
 	@Test
-	public void bindByEnum() throws InstantiationException, IllegalAccessException, BindingResolverException {
+	public void bindByEnumName() throws InstantiationException, IllegalAccessException, BindingResolverException {
+		IBinder binder = new Binder();
+
+		Model A = new Model();
+		A.setValue(100);
+		A.str = "A";
+
+		binder.bind(IModel.class).to(A).toName(MyEnum.A);
 		
+		Model BB = (Model) binder.getBinding(IModel.class, MyEnum.A);
+		Assert.assertEquals(BB.getValue(), 100);
+	}
+	
+	@Test
+	public void bindByPrimitiveWrapper() throws InstantiationException, IllegalAccessException, BindingResolverException {
+		IBinder binder = new Binder();
+
+		Model A = new Model();
+		A.setValue(100);
+		A.str = "A";
+		
+		Integer i = new Integer(100);
+		Integer j = 100; // both instances pointed to the same object cause to java optimization
+		
+		binder.bind(i).to(A);
+		
+		Model BB = (Model) binder.getBinding(j);
+		Assert.assertEquals(BB.getValue(), 100);
+	}
+	
+	@Test
+	public void bindByStringValue() throws InstantiationException, IllegalAccessException, BindingResolverException {
+		IBinder binder = new Binder();
+
+		Model A = new Model();
+		A.setValue(100);
+		A.str = "A";
+
+		binder.bind("Hi").to(A);
+		
+		Model BB = (Model) binder.getBinding(new String("Hi"));
+		Assert.assertEquals(BB.getValue(), 100);
+	}
+	
+	@Test
+	public void bindStringToPrimitiveWrapper() throws InstantiationException, IllegalAccessException, BindingResolverException {
+		IBinder binder = new Binder();
+
+		binder.bind("Hi").to(150);
+		
+		int i = (int) binder.getBinding(new String("Hi")); // new is useless
+		Assert.assertEquals(i, 150);
+	}
+	
+	@Test
+	public void bindPrimitiveWrapperToPrimitiveWrapper() throws InstantiationException, IllegalAccessException, BindingResolverException {
+		IBinder binder = new Binder();
+
+		binder.bind(199).to(150);
+		
+		int i = (int) binder.getBinding(199);
+		Assert.assertEquals(i, 150);
 	}
 }

@@ -31,14 +31,10 @@ public class InjectionBinder extends Binder implements IInjectionBinder {
 		valuesBindingInjected = new HashSet<>();
 	}
 	
-	
 	@Override
-	public IBinding bind(Class<?> key) {
-		// This code can lead to an error because it forces binding to be in a correct order (it reflects previous binding during process)...
-		// reflectBindings(lastBinding);
-		
+	public IBinding bind(Object key) {		
 		lastBinding = super.bind(key);
-		// reflect(key); // Improve performance but this call force to write bindings in the right order... it's painful :D
+		// reflect(key); // Improve performance (pre-reflect classes) but this call force to write bindings in the right order... it's really painful :D
 		return lastBinding;
 	}
 	
@@ -51,7 +47,8 @@ public class InjectionBinder extends Binder implements IInjectionBinder {
 		if(binding == null)
 			return;
 		
-		for(Entry<String, Object> b : binding.getBindings().entrySet()){
+		// changed !
+		for(Entry<Object, Object> b : binding.getBindings().entrySet()){
 			Object toReflect = b.getValue();
 			if(toReflect instanceof Class)
 				reflect((Class<?>) toReflect);
@@ -96,7 +93,7 @@ public class InjectionBinder extends Binder implements IInjectionBinder {
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
-	public <T> T getInstance(Class<T> key, String name) {
+	public Object getInstance(Object key, Object name) {
 		Object o = null;
 		try {
 			o = super.getBinding(key, name);
@@ -126,7 +123,7 @@ public class InjectionBinder extends Binder implements IInjectionBinder {
 		}
 		
 		try {
-			return (T) o;
+			return o;
 		}
 		catch(ClassCastException e){
 			throw new IllegalStateException("The cast failed, the binder could be inconsistent.", e);
@@ -134,7 +131,7 @@ public class InjectionBinder extends Binder implements IInjectionBinder {
 	}
 
 	@Override
-	public <T> T getInstance(Class<T> key) {
+	public Object getInstance(Object key) {
 		return getInstance(key, null);
 	}
 

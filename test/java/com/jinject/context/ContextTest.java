@@ -9,6 +9,11 @@ import com.jinject.utils.Controller;
 import com.jinject.utils.IModel;
 import com.jinject.utils.Model;
 
+/**
+ * Test cases for context
+ * @author Thibaud Giovannetti
+ *
+ */
 public class ContextTest {
 	@Test
 	public void basic(){

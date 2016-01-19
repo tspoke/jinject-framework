@@ -16,7 +16,7 @@ public interface IBinder {
 	 * @throws IllegalAccessException 
 	 * @throws InstantiationException 
 	 */
-	Object getBinding(Class<?> key) throws InstantiationException, IllegalAccessException, BindingResolverException;
+	Object getBinding(Object key) throws InstantiationException, IllegalAccessException, BindingResolverException;
 	
 	
 	/**
@@ -28,31 +28,31 @@ public interface IBinder {
 	 * @throws IllegalAccessException 
 	 * @throws InstantiationException 
 	 */
-	Object getBinding(Class<?> key, String name) throws InstantiationException, IllegalAccessException, BindingResolverException;
+	Object getBinding(Object key, Object name) throws InstantiationException, IllegalAccessException, BindingResolverException;
 	
 	/**
 	 * Prepare the binding of an object
 	 * @param clazz
 	 * @return
 	 */
-	IBinding bind(Class<?> key);
+	IBinding bind(Object key);
 	
 	/**
 	 * Remove all bindings associates to this key
 	 * @param key
 	 */
-	void unbindAll(Class<?> key);
+	void unbindAll(Object key);
 	
 	/**
 	 * Unbind the default binding associate to this key
 	 * @param key
 	 */
-	void unbind(Class<?> key);
+	void unbind(Object key);
 	
 	/**
 	 * Unbind the binding associate to this key and to this name
 	 * @param key
 	 * @param name
 	 */
-	void unbind(Class<?> key, String name);
+	void unbind(Object key, Object name);
 }

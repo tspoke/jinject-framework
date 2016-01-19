@@ -12,6 +12,11 @@ import com.jinject.utils.IOther;
 import com.jinject.utils.Model;
 import com.jinject.utils.Other;
 
+/**
+ * Tests cases for the injection binder
+ * @author Thibaud Giovannetti
+ *
+ */
 public class InjectionBinderTest {
 	
 	@Test
@@ -39,7 +44,19 @@ public class InjectionBinderTest {
 		injectionBinder.bind(IOther.class).to(Other.class);
 		injectionBinder.bind(IModel.class).to(Model.class);
 		
-		IModel model = injectionBinder.getInstance(IModel.class);
+		IModel model = (IModel) injectionBinder.getInstance(IModel.class);
+		
+		Assert.assertEquals(model.getValue(), 0);
+	}
+	
+	@Test
+	public void bindPrimitiveWrapper(){
+		IInjector injector = new Injector(new Reflector());
+		InjectionBinder injectionBinder = new InjectionBinder(injector);
+		
+		injectionBinder.bind(999).to(Other.class);
+		
+		Other model = (Other) injectionBinder.getInstance(999);
 		
 		Assert.assertEquals(model.getValue(), 0);
 	}
@@ -51,7 +68,7 @@ public class InjectionBinderTest {
 
 		injectionBinder.bind(IOther.class).to(Other.class);
 		injectionBinder.bind(IModel.class).to(Model.class);
-		IModel model = injectionBinder.getInstance(IModel.class);
+		IModel model = (IModel) injectionBinder.getInstance(IModel.class);
 
 		Assert.assertEquals(model.getValue(), 0);
 		Assert.assertEquals(model.getOther().getValue(), 0);

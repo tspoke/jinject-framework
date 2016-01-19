@@ -23,7 +23,7 @@ public interface IBinding {
 	 * @param name
 	 * @return
 	 */
-	IBinding toName(String name);
+	IBinding toName(Object name);
 	
 	/**
 	 * Lock the binding. This method gives you the capacity to protect instances.
@@ -39,7 +39,7 @@ public interface IBinding {
 	 * @throws IllegalAccessException 
 	 * @throws InstantiationException 
 	 */
-	Object getBinding(String name) throws BindingResolverException, InstantiationException, IllegalAccessException;
+	Object getBinding(Object name) throws BindingResolverException, InstantiationException, IllegalAccessException;
 	
 	/**
 	 * Get the default binding
@@ -54,7 +54,7 @@ public interface IBinding {
 	 * Get all bindings for this IBinding object
 	 * @return
 	 */
-	Map<String, Object> getBindings();
+	Map<Object, Object> getBindings();
 
 	/**
 	 * Unbind the default binding
@@ -68,7 +68,7 @@ public interface IBinding {
 	 * @param value
 	 * @return
 	 */
-	IBinding unbind(String name);
+	IBinding unbind(Object name);
 	
 	/**
 	 * Unbind all binding
