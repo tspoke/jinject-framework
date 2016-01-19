@@ -3,7 +3,7 @@ JInject is a small binding framework coupled with a dependency injection system.
 
 It provides :
 * Injection of dependencies by field
-* Binding system (key, value, <name>) type safe
+* Binding system (key, value, <name>)
 * Context to facilitate usage
 
 Features to come :
@@ -94,6 +94,28 @@ public void start() {
   System.out.println(test.mySpecialClass.concreteClassInstance);
 }
 ```
+
+
+# Binding examples
+Some examples to show you what you can bind (actually almost everything :p ) :
+```java
+IBinder binder = new Binder();
+binder.bind(IMyInterface.class).to(MyConcreteClass.class);  // bind interface to concrete class
+binder.bind(ConcreteClass.class).to(ConcreteClass.class); // bind concrete class to itself 
+binder.bind(ConcreteClass.class).to(instanceOfMyConcreteClass); // bind concrete class to an instance
+binder.bind(ConcreteClass.class).to(instanceOfMyConcreteClass).toName("myInstance"); // bind concrete class to an instance and to a name
+binder.bind(ConcreteClass.class).to(instanceOfMyConcreteClass).toName(MyEnum.ENUM_VALUE); // bind concrete class to an instance and to an enum
+
+// others :)
+binder.bind(100).to("Hello world");  // binding primitive (wrappers) to String object
+binder.bind("Hi jack").to(instanceObject);  // String to an instance...
+binder.bind("me").to("Thibaud Giovannetti"); // String to string
+```
+
+# Events
+JInject implements some events, but due to the implementation of the java langage their usage is not trivial at this time.
+
+// doc comming
 
 ###### Version
 JInject v0.2
