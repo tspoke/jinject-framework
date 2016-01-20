@@ -2,14 +2,13 @@
 JInject is a small binding framework coupled with a dependency injection system.
 
 It provides :
-* Injection of dependencies by field
-* Binding system (key, value, <name>)
+* Injection of dependencies
+* Binding system (key, value, <name>)  (bind any type to anything)
 * Context to facilitate usage
 
 Features to come :
+* Event system
 * Injection by constructor
-* Binding by Object
-* Possibility to bind any type to any value
 * MVC context
 * Bind event to specific actions
 
