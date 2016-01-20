@@ -10,7 +10,12 @@ public abstract class UnaryListener<T> implements IListener {
 	public void execute(Object... params) {
 		if(params.length != 1)
 			throw new ListenerException("Wrong number of params, expected 1 given " + params.length);
-		execute((T) params[0]);
+		try {
+			execute((T) params[0]);
+		}
+		catch(ClassCastException e){
+			throw new ListenerException("Wrong type of parameters given :" + e.getMessage());
+		}
 	}
 	
 	public abstract void execute(T param);
