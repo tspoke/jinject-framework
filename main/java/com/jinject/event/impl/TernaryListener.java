@@ -7,7 +7,7 @@ public abstract class TernaryListener<T, U, V> implements IListener {
 	@SuppressWarnings("unchecked")
 	@Override
 	public void execute(Object... params) {
-		if(params.length != 3)
+		if(params.length < 3) // TODO 	Remove this check and authorize every listener on every event, some field could be null but it's a programmer fault
 			throw new ListenerException("Wrong number of params, expected 3 given " + params.length);
 		try {
 			execute((T) params[0], (U) params[1], (V) params[2]);

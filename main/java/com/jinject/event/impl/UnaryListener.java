@@ -8,7 +8,7 @@ public abstract class UnaryListener<T> implements IListener {
 	@SuppressWarnings("unchecked")
 	@Override
 	public void execute(Object... params) {
-		if(params.length != 1)
+		if(params.length < 1)
 			throw new ListenerException("Wrong number of params, expected 1 given " + params.length);
 		try {
 			execute((T) params[0]);

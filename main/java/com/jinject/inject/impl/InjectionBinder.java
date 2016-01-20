@@ -14,7 +14,6 @@ import com.jinject.inject.api.IInjector;
  * InjectionBinder is an implementation based on Binder of IInjectionBinder.
  * It combines the binder system to an injection system.
  * @author Thibaud Giovannetti
- *
  */
 public class InjectionBinder extends Binder implements IInjectionBinder {
 	private final IInjector injector;

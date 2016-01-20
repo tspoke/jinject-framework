@@ -31,7 +31,7 @@ public class Binder implements IBinder {
 		return binding;
 	}
 	
-	private IBinding resolveBinding(Object key){
+	protected IBinding resolveBinding(Object key){
 		if(bindings.containsKey(key))
 			return bindings.get(key);
 		

@@ -1,17 +1,18 @@
 package com.jinject.event.impl;
 
-import com.jinject.event.api.IListener;
 import com.jinject.event.exception.EventException;
-import com.jinject.event.exception.ListenerException;
 
 public class UnaryEvent<T> extends AbstractEvent {
 
+	/*
 	@Override
 	public void addListener(IListener listener) {
-		if(!(listener instanceof UnaryListener))
-			throw new ListenerException("addListener() on a UnaryEvent expect an instance of UnaryListener. Wrong listener given.");
+		if(!(listener instanceof UnaryListener) && !(listener instanceof SimpleListener))
+			throw new ListenerException("addListener() on a UnaryEvent expect an instance of UnaryListener or SimpleListener. Wrong listener given.");
+		
 		super.addListener(listener);
 	}
+	*/
 	
 	@SuppressWarnings("unchecked")
 	@Override

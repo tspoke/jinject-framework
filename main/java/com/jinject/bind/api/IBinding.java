@@ -55,6 +55,12 @@ public interface IBinding {
 	 * @return
 	 */
 	Map<Object, Object> getBindings();
+	
+	/**
+	 * Get all bindings for this IBinding object
+	 * @return
+	 */
+	Map<Object, Object> getNamedBindings();
 
 	/**
 	 * Unbind the default binding

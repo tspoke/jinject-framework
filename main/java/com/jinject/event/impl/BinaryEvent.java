@@ -1,17 +1,17 @@
 package com.jinject.event.impl;
 
-import com.jinject.event.api.IListener;
 import com.jinject.event.exception.EventException;
-import com.jinject.event.exception.ListenerException;
 
 public class BinaryEvent<T, U> extends AbstractEvent {
 	
+	/*
 	@Override
 	public void addListener(IListener listener) {
-		if(!(listener instanceof BinaryListener))
-			throw new ListenerException("addListener() on a BinaryEvent expect an instance of BinaryListener. Wrong listener given.");
+		if(!(listener instanceof BinaryListener) && !(listener instanceof SimpleListener))
+			throw new ListenerException("addListener() on a BinaryEvent expect an instance of BinaryListener, UnaryListener or SimpleListener. Wrong listener given.");
 		super.addListener(listener);
 	}
+	*/
 	
 	@SuppressWarnings("unchecked")
 	@Override

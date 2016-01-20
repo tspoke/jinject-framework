@@ -2,6 +2,7 @@ package com.jinject.bind.impl;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import com.jinject.bind.api.IBinding;
 import com.jinject.bind.exception.BindingResolverException;
@@ -19,7 +20,7 @@ public class Binding implements IBinding {
 
 	@Override
 	public IBinding to(Object o) {
-		if(locked)
+		if(locked && bindings.size() > 0)
 			throw new ExceptionInInitializerError("This binding is locked !");
 		
 		if(temporary != null)
@@ -63,6 +64,19 @@ public class Binding implements IBinding {
 	@Override
 	public Map<Object, Object> getBindings() {
 		return bindings;
+	}
+	
+	// TODO 	optimize this code
+	@Override
+	public Map<Object, Object> getNamedBindings() {
+		Map<Object, Object> namedOnly = new HashMap<Object, Object>(bindings.size() - 1);
+		
+		for(Entry<Object, Object> e : bindings.entrySet()){
+			if(e.getKey() != null)
+				namedOnly.put(e.getKey(), e.getValue());
+		}
+		
+		return namedOnly;
 	}
 
 

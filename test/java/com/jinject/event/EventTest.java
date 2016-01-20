@@ -9,17 +9,18 @@ import com.jinject.event.impl.SimpleListener;
 import com.jinject.event.impl.TernaryListener;
 import com.jinject.utils.Events.BinaryTestEvent;
 import com.jinject.utils.Events.SimpleTestEvent;
+import com.jinject.utils.ReachedException;
 
 public class EventTest {
 	
-	@Test(expected=ListenerException.class)
+	@Test(expected=ReachedException.class)
 	public void generalInstanciation(){
 		SimpleTestEvent simpleEvent = new SimpleTestEvent();
 		
 		simpleEvent.addListener(new SimpleListener() {
 			@Override
 			public void execute(Object... params) {
-				throw new ListenerException("Code reached");
+				throw new ReachedException();
 			}
 		});
 		
@@ -30,16 +31,16 @@ public class EventTest {
 	public void wrongListenerOnEvent(){
 		BinaryTestEvent aze = new BinaryTestEvent();
 		aze.addListener(new TernaryListener<String, Integer, Float>() {
-
 			@Override
 			public void execute(String param, Integer param2, Float param3) {
-				// never reached
+				throw new ReachedException();
 			}
-			
 		});
+		// Event constraints to 2 but the listener above needs 3, so for now it raise an exception
+		aze.fire("String", 100);
 	}
 	
-	@Test(expected=ListenerException.class)
+	@Test(expected=ReachedException.class)
 	public void binaryEvent(){
 		BinaryTestEvent binary = new BinaryTestEvent();
 
@@ -47,7 +48,7 @@ public class EventTest {
 
 			@Override
 			public void execute(String param, Integer param2) {
-				throw new ListenerException("Code reached : " + param + " ->" + param2);
+				throw new ReachedException();
 			}
 			
 		});
@@ -63,7 +64,7 @@ public class EventTest {
 
 			@Override
 			public void execute(String param, Integer param2) {
-				// never reached
+				throw new ReachedException();
 			}
 			
 		});
@@ -79,7 +80,7 @@ public class EventTest {
 
 			@Override
 			public void execute(String param, Integer param2) {
-				// never reached
+				throw new ReachedException();
 			}
 			
 		});
