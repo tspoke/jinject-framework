@@ -2,15 +2,16 @@
 JInject is a small binding framework coupled with a dependency injection system.
 
 It provides :
-* Injection of dependencies
+* Injection of dependencies by fields or by constructor
 * Binding system (key, value, <name>)  (bind any type to anything)
+* Events
+* Binding events to specifics actions
 * Context to facilitate usage
 
 Features to come :
-* Event system
-* Injection by constructor
 * MVC context
-* Bind event to specific actions
+
+
 
 # Basic usage
 ### Create a context
@@ -22,6 +23,11 @@ public class MyContext extends AbstractContext {
 	@Override
 	public void setupBindings() {
 	  // your bindings
+	}
+
+	@Override
+	public void setupActions() {
+	  // your actions (event to action)
 	}
 
 	@Override
@@ -61,23 +67,23 @@ Create a test class with specific annotation to inject content :
 // test class
 public class MyTestClass {
   @Inject
-  public MySpecialClass mySpecialClass; // injected by value
+  private MySpecialClass mySpecialClass; // injected by value
   
   @Inject
-  public IOtherObject otherObject; // new object instance
+  private IOtherObject otherObject; // new object instance
   
   @Inject("NAMED")
-  public IOtherObject otherObject; // injected by value, always the same object accross all instances
+  private IOtherObject otherObject; // injected by value, always the same object accross all instances
 }
 
 
 // for example, you can implement MySpecialClass like this and observe the cascade injection
 public class MySpecialClass {
   @Inject
-  public IMyInterface concreteClassInstance; // new instance
+  private IMyInterface concreteClassInstance; // new instance
   
   @Inject("MY_OBJECT")
-  public IOtherInterface otherObject; // injected by value, always the same object
+  private IOtherInterface otherObject; // injected by value, always the same object
 }
 
 ```
@@ -116,8 +122,23 @@ Events is a way to execute specials actions previously binded. For instance, you
 JInject implements some events, but due to the implementation of the java langage their usage is not trivial at this time.
 
 ```java
+ActionBinder actionBinder = new ActionBinder(new Injector(new Reflector())); // most of the time you won't do this cause it's already done in Context
+actionBinder.bind(MySpecialEvent.class).to(MyAction.class);
+
+// in a view for example
+class MyView {
+	@Inject
+	private MySpecialEvent event; // inject the default event
+
+	public void test(){
+		event.fire(); // this will automatically instantiate a MyAction object and call it's execute method !
+	}
+}
 
 ```
 
+# View 
+Doc coming...
+
 ###### Version
-JInject v0.2
+JInject v0.3

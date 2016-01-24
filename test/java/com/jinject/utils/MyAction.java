@@ -7,6 +7,7 @@ public class MyAction extends AbstractAction {
 
 	@Override
 	public void execute() {
+		System.out.println("My Action execute() called");
 		throw new ReachedException();
 	}
 
