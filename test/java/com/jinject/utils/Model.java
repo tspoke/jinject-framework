@@ -1,13 +1,23 @@
 package com.jinject.utils;
 
 import com.jinject.inject.api.Inject;
+import com.jinject.inject.api.InjectConstructor;
 
 public class Model implements IModel {
 	@Inject
-	public IOther other;
+	private IOther other;
 	
 	public String str;
 	private int value;
+	
+	@InjectConstructor
+	public Model(IOther again) {
+		System.out.println("test/utils/Model.class : " + again);
+	}
+	
+	public Model() {
+		
+	}
 	
 	
 	@Override

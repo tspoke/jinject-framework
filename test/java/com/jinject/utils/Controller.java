@@ -4,5 +4,9 @@ import com.jinject.inject.api.Inject;
 
 public class Controller {
 	@Inject
-	public IModel model;
+	private IModel model;
+	
+	public IModel getModel(){
+		return model;
+	}
 }

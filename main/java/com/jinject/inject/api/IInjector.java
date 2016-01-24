@@ -23,8 +23,7 @@ public interface IInjector {
 	 * @throws IllegalArgumentException
 	 * @throws IllegalAccessException
 	 */
-	InjectorBindingMapper inject(Object instance, IBinder binder) throws InstantiationException, BindingResolverException, IllegalArgumentException, IllegalAccessException;
-	
+	Object inject(Object instance, IBinder binder) throws InstantiationException, BindingResolverException, IllegalArgumentException, IllegalAccessException;
 	
 	/**
 	 * Fastest method to inject values in an instance with a mapper.
@@ -34,8 +33,10 @@ public interface IInjector {
 	 * @throws IllegalArgumentException
 	 * @throws IllegalAccessException
 	 * @throws InstantiationException 
+	 * @throws BindingResolverException 
 	 */
-	List<Object> inject(Object instance, InjectorBindingMapper mapper) throws IllegalArgumentException, IllegalAccessException, InstantiationException;
+	Object inject(Object object, InjectorBindingMapper mapper, IBinder binder) throws IllegalArgumentException, IllegalAccessException, InstantiationException, BindingResolverException;
+	
 	
 	/**
 	 * Try to inject value in an instance. If the mapper doesn't exists an error will occurs.
@@ -45,7 +46,7 @@ public interface IInjector {
 	 * @throws IllegalAccessException
 	 * @throws InstantiationException 
 	 */
-	void inject(Object instance) throws IllegalArgumentException, IllegalAccessException, InstantiationException;
+	// Object inject(Object instance) throws IllegalArgumentException, IllegalAccessException, InstantiationException;
 	
 	/**
 	 * Call its reflector to pre-reflect class and add its mapping in the cache.
@@ -57,4 +58,10 @@ public interface IInjector {
 	 * @throws InstantiationException 
 	 */
 	boolean register(Class<?> clazz, IBinder binder) throws InstantiationException, IllegalAccessException, BindingResolverException;
+
+
+
+
+
+	
 }

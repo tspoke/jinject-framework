@@ -14,6 +14,7 @@ public class Binder implements IBinder {
 	public Binder() {
 		bindings = new HashMap<>();
 	}
+
 	
 	@Override
 	public Object getBinding(Object key) throws InstantiationException, IllegalAccessException, BindingResolverException {
@@ -54,5 +55,9 @@ public class Binder implements IBinder {
 	@Override
 	public void unbind(Object key, Object name) {
 		resolveBinding(key).unbind(name);
+	}
+
+	public Map<Object, IBinding> getBindings() {
+		return bindings;
 	}
 }

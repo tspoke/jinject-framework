@@ -20,9 +20,14 @@ import com.jinject.inject.exception.InjectionException;
 public class ActionBinder extends Binder implements IActionBinder {
 	private final IInjector injector;
 	
-	
+
 	public ActionBinder(IInjector injector) {
 		this.injector = injector;
+	}
+	
+	public ActionBinder(IInjector injector, Binder binder) {
+		this.injector = injector;
+		this.bindings = binder.getBindings(); // shared bindings
 	}
 	
 	@Override
@@ -74,6 +79,9 @@ public class ActionBinder extends Binder implements IActionBinder {
 		}
 	}
 	
+	/**
+	 * Override default behaviour to use ActionBinding instead
+	 */
 	@Override
 	protected IBinding resolveBinding(Object key) {
 		if(bindings.containsKey(key))

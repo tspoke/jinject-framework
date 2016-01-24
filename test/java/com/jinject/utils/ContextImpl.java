@@ -1,6 +1,7 @@
 package com.jinject.utils;
 
 import com.jinject.context.impl.AbstractContext;
+import com.jinject.utils.Events.BinaryTestEvent;
 
 public class ContextImpl extends AbstractContext {
 	
@@ -14,9 +15,15 @@ public class ContextImpl extends AbstractContext {
 		
 		injectionBinder.bind(IModel.class).to(model).toName("test");
 	}
+	
+	@Override
+	public void setupActions() {
+		actionBinder.bind(BinaryTestEvent.class).to(MyAction.class);
+	}
 
 	@Override
 	public void start() {
 		
 	}
+
 }

@@ -33,7 +33,7 @@ public class InjectionSystemTest {
 
 		Controller control = new Controller();
 		injector.inject(control, binder);
-		Assert.assertEquals(control.model.getValue(), 285);
+		Assert.assertEquals(control.getModel().getValue(), 285);
 	}
 	
 	@Test
@@ -52,8 +52,29 @@ public class InjectionSystemTest {
 		// slow injection to first Controller and creation of mapping
 		injector.inject(control, binder);
 		// fast injection to second controller using previous mapping stored in the injector
-		injector.inject(control2);
+		injector.inject(control2, binder);
 		
-		Assert.assertEquals(control2.model.getValue(), 155);
+		Assert.assertEquals(control2.getModel().getValue(), 155);
+	}
+	
+	@Test
+	public void injectionByConstructor() throws InstantiationException, IllegalArgumentException, IllegalAccessException, BindingResolverException{
+		IBinder binder = new Binder();
+		IInjector injector = new Injector(new Reflector());
+
+		Model model = new Model();
+		model.setValue(155);
+
+		binder.bind(IOther.class).to(Other.class);
+		binder.bind(IModel.class).to(model);
+		
+		Controller control = new Controller();
+		Controller control2 = new Controller();
+		// slow injection to first Controller and creation of mapping
+		injector.inject(control, binder);
+		// fast injection to second controller using previous mapping stored in the injector
+		injector.inject(control2, binder);
+		
+		Assert.assertEquals(control2.getModel().getValue(), 155);
 	}
 }

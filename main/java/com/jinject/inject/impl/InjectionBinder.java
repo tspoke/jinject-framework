@@ -30,6 +30,11 @@ public class InjectionBinder extends Binder implements IInjectionBinder {
 		valuesBindingInjected = new HashSet<>();
 	}
 	
+	public InjectionBinder(IInjector injector, Binder binder) {
+		this.injector = injector;
+		this.bindings = binder.getBindings(); // shared bindings
+	}
+	
 	@Override
 	public IBinding bind(Object key) {		
 		lastBinding = super.bind(key);
@@ -103,18 +108,16 @@ public class InjectionBinder extends Binder implements IInjectionBinder {
 		
 		if(!(o instanceof Class) && !valuesBindingInjected.contains(o)){ // is a value (instance) && not already injected
 			try {
-				injector.inject(o, this);
-			} 
+				o = injector.inject(o, this);
+				valuesBindingInjected.add(o);
+			}
 			catch (InstantiationException | IllegalArgumentException | IllegalAccessException | BindingResolverException e) {
 				throw new IllegalStateException("The injection process failed. Did you bind all your objects annoted with @Inject ?", e);
 			}
-			
-			valuesBindingInjected.add(o);
 		}
 		else if (o instanceof Class){
 			try {
-				o = ((Class<?>) o).newInstance(); // create a new instance
-				injector.inject(o, this); // inject this new instance
+				o = injector.inject(o, this); // inject this new instance
 			} 
 			catch (InstantiationException | IllegalAccessException | IllegalArgumentException | BindingResolverException e) {
 				throw new IllegalStateException("The creation and injection of an instance of the type " + key + " failed.", e);

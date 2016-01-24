@@ -31,9 +31,9 @@ public class InjectionBinderTest {
 		Controller control2 = new Controller();
 		
 		injector.inject(control, injectionBinder);
-		injector.inject(control2);
+		injector.inject(control2, injectionBinder);
 		
-		Assert.assertEquals(control.model.getOther().equals(control2.model.getOther()), false);
+		Assert.assertEquals(control.getModel().getOther().equals(control2.getModel().getOther()), false);
 	}
 	
 	@Test

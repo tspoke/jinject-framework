@@ -4,7 +4,7 @@ import com.jinject.inject.api.Inject;
 
 public class ShipModel implements IModel{
 	@Inject
-	public IOther other;
+	private IOther other;
 	
 	public String str;
 	private int value;

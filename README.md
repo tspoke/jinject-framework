@@ -96,7 +96,7 @@ public void start() {
 
 
 # Binding examples
-Some examples to show you what you can bind (actually almost everything :p ) :
+Some examples to show you what you can bind (actually almost everything) :
 ```java
 IBinder binder = new Binder();
 binder.bind(IMyInterface.class).to(MyConcreteClass.class);  // bind interface to concrete class
@@ -112,9 +112,12 @@ binder.bind("me").to("Thibaud Giovannetti"); // String to string
 ```
 
 # Events
+Events is a way to execute specials actions previously binded. For instance, you can bind a ItemPickedUpEvent to a special action who will add life to the player.
 JInject implements some events, but due to the implementation of the java langage their usage is not trivial at this time.
 
-// doc comming
+```java
+
+```
 
 ###### Version
 JInject v0.2
