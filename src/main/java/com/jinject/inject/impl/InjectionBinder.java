@@ -76,9 +76,9 @@ public class InjectionBinder extends Binder implements IInjectionBinder {
 
 
 	@Override
-	public Object register(Object o) {
+	public Object inject(Object o) {
 		if(o instanceof Class)
-			throw new IllegalStateException("You can't register a class type, only instances");
+			throw new IllegalStateException("You can't inject a class type, only instances");
 		
 		try {
 			injector.inject(o, this);

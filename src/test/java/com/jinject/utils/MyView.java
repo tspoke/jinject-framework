@@ -10,7 +10,6 @@ public class MyView extends AbstractView {
 	
 	@InjectConstructor
 	public MyView(IContext context, SimpleTestEvent event) {
-		super(context);
 		this.event = event;
 		System.out.println("Event value after injection : " + this.event);
 	}

@@ -34,5 +34,5 @@ public interface IInjectionBinder {
 	 * Register an object and inject its dependencies
 	 * @return the same object injected
 	 */
-	Object register(Object o);
+	Object inject(Object o);
 }

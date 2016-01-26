@@ -36,7 +36,7 @@ public class ContextTest {
 		ContextImpl context = new ContextImpl();
 		
 		Controller control = new Controller();
-		context.register(control);
+		context.inject(control);
 		
 		Assert.assertEquals(control.getModel().getOther().getValue(), 0);
 	}

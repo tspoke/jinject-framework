@@ -1,7 +1,5 @@
 package com.jinject.context.api;
 
-import com.jinject.view.api.IView;
-
 /**
  * 
  * @author Thibaud Giovannetti
@@ -10,7 +8,11 @@ import com.jinject.view.api.IView;
 public interface IContext {
 	void start();
 	
-	Object register(Object o);
+	Object inject(Object o);
 	
-	void addView(IView view);
+	/**
+	 * This method bind a view to itself. It's a syntaxic sugar for injectionBinder.bind(view.class).to(view.class)
+	 * @param view
+	 */
+	void addView(Object view);
 }

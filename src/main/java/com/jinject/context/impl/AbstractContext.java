@@ -8,7 +8,6 @@ import com.jinject.inject.api.IInjector;
 import com.jinject.inject.impl.InjectionBinder;
 import com.jinject.inject.impl.Injector;
 import com.jinject.reflect.impl.Reflector;
-import com.jinject.view.api.IView;
 
 /**
  * An abstract context based on differents binders : injectionBinder & actionBinder
@@ -36,8 +35,8 @@ public abstract class AbstractContext implements IContext {
 	}
 
 	@Override
-	public Object register(Object o) {
-		return injectionBinder.register(o);
+	public Object inject(Object o) {
+		return injectionBinder.inject(o);
 	}
 
 	/**
@@ -59,7 +58,12 @@ public abstract class AbstractContext implements IContext {
 		return actionBinder;
 	}
 
-	public void addView(IView view) {
-		System.out.println("TODO : addView in AbstractContext");
+	public void addView(Object view) {
+		injectionBinder.bind(view).to(view);
+	}
+	
+	@SuppressWarnings("unchecked")
+	public <T> T getView(Class<T> clazz){
+		return (T) injectionBinder.getInstance(clazz);
 	}
 }

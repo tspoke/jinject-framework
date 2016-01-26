@@ -6,9 +6,8 @@ import com.jinject.view.api.IView;
 public class AbstractView implements IView {
 	private IContext context;
 
-	public AbstractView(IContext context) {
-		this.context = context;
-		registerWithContext();
+	public AbstractView() {
+		// registerWithContext();
 	}
 	
 	final protected void registerWithContext(){
