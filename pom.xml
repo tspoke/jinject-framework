@@ -47,5 +47,15 @@
 			<artifactId>log4j</artifactId>
 			<version>${version.log4j}</version>
 		</dependency>
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-lang3</artifactId>
+			<version>${version.commons}</version>
+		</dependency>
+		<dependency>
+			<groupId>commons-collections</groupId>
+			<artifactId>commons-collections</artifactId>
+			<version>${version.commons}</version>
+		</dependency>
 	</dependencies>
 </project>

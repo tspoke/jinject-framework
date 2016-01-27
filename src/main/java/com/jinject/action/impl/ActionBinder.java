@@ -1,6 +1,7 @@
 package com.jinject.action.impl;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -96,7 +97,7 @@ public class ActionBinder extends Binder implements IActionBinder {
 				
 				action.execute();
 			} 
-			catch (IllegalArgumentException | IllegalAccessException | InstantiationException | BindingResolverException e1) {
+			catch (IllegalArgumentException | IllegalAccessException | InstantiationException | BindingResolverException | InvocationTargetException | NoSuchMethodException | SecurityException e1) {
 				throw new InjectionException("ActionBinder : Cannot cast and inject into : " + e.getValue() + ". \nPrevious error : " + e1.getClass() + " => " + e1.getMessage());
 			}
 		}

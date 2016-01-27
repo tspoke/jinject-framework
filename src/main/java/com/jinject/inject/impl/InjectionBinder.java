@@ -95,7 +95,6 @@ public class InjectionBinder extends Binder implements IInjectionBinder {
 	 * This version is optimized to avoid multiple injection to value bindings.
 	 * TODO 	Provide a mecanism to avoid infinite injection (inject same object in the object itself)
 	 */
-	@SuppressWarnings("unchecked")
 	@Override
 	public Object getInstance(Object key, Object name) {
 		Object o = null;

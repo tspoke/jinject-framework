@@ -2,6 +2,7 @@ package com.jinject.inject.api;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import java.util.Map;
 
@@ -95,8 +96,11 @@ public interface IInjector {
 	 * @throws IllegalAccessException
 	 * @throws InstantiationException
 	 * @throws BindingResolverException
+	 * @throws SecurityException 
+	 * @throws NoSuchMethodException 
+	 * @throws InvocationTargetException 
 	 */
-	void injectFields(Object instance, IBinder binder, Map<Field, Object> mapping, boolean recursiveInjection) throws IllegalArgumentException, IllegalAccessException, InstantiationException, BindingResolverException;
+	void injectFields(Object instance, IBinder binder, Map<Field, Object> mapping, boolean recursiveInjection) throws IllegalArgumentException, IllegalAccessException, InstantiationException, BindingResolverException, InvocationTargetException, NoSuchMethodException, SecurityException;
 	
 	/**
 	 * Inject specific instances to an object and return all not injected fields

@@ -4,7 +4,6 @@ import org.junit.Test;
 
 import com.jinject.action.impl.ActionBinder;
 import com.jinject.bind.exception.BindingResolverException;
-import com.jinject.event.impl.UnaryEvent;
 import com.jinject.inject.impl.Injector;
 import com.jinject.reflect.impl.Reflector;
 import com.jinject.utils.Events.BinaryTestEvent;
@@ -30,5 +29,10 @@ public class ActionTest {
 		
 		BinaryTestEvent event = (BinaryTestEvent) actionBinder.getBinding(BinaryTestEvent.class);
 		event.fire("Test bindings", 111);
+	}
+	
+	@Test(expected=ReachedException.class)
+	public void bindEventToActionWithComplexParams() throws InstantiationException, IllegalAccessException, BindingResolverException{
+		// TODO 	Send object like IOther throught event :)
 	}
 }

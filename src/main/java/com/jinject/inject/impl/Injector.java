@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.apache.commons.lang3.ClassUtils;
+
 import com.jinject.bind.api.IBinder;
 import com.jinject.bind.exception.BindingResolverException;
 import com.jinject.inject.api.IInjector;
@@ -42,7 +44,6 @@ public class Injector implements IInjector {
 		
 		for(Entry<Field, Object> f : mapping.entrySet()){
 			Object expected = f.getValue();
-			Object toBind = null;
 			
 			if(expected instanceof Class && bindings.containsKey(expected)){
 				f.getKey().set(instance, bindings.get(expected));
@@ -54,16 +55,21 @@ public class Injector implements IInjector {
 	}
 	
 	@Override
-	public void injectFields(Object instance, IBinder binder, Map<Field, Object> mapping, boolean recursiveInjection) throws IllegalArgumentException, IllegalAccessException, InstantiationException, BindingResolverException{
+	public void injectFields(Object instance, IBinder binder, Map<Field, Object> mapping, boolean recursiveInjection) throws IllegalArgumentException, IllegalAccessException, InstantiationException, BindingResolverException, InvocationTargetException, NoSuchMethodException, SecurityException{
 		for(Entry<Field, Object> f : mapping.entrySet()){
 			Object expected = f.getValue();
 			Object toBind = null;
 			
-			if(expected instanceof Class && !((Class<?>) expected).isPrimitive())
-				toBind = ((Class<?>) expected).newInstance();
-			/*else if(expected instanceof Class && ((Class<?>) expected).isPrimitive())
-				toBind = ClassUtils.primitiveToWrapper(expected);
-				*/ 
+			if(expected instanceof Class){
+				Class<?> clazz = (Class<?>) expected;
+				if(!ClassUtils.isPrimitiveOrWrapper(clazz))
+					toBind = clazz.newInstance();
+				else if (ClassUtils.isPrimitiveWrapper(clazz))
+					toBind = clazz.getConstructor(ClassUtils.wrappersToPrimitives(clazz)).newInstance(0);
+				else {
+					toBind = ClassUtils.primitiveToWrapper(clazz).getConstructor(clazz).newInstance(0);;
+				}
+			}
 			else 
 				toBind = expected;
 			
@@ -112,7 +118,12 @@ public class Injector implements IInjector {
 			instance = object;
 		
 		// Fields
-		injectFields(instance, binder, mapper.getBindingsForFields(), true);
+		try {
+			injectFields(instance, binder, mapper.getBindingsForFields(), true);
+		} 
+		catch (InvocationTargetException | NoSuchMethodException | SecurityException e) {
+			throw new BindingResolverException("Injector : Cannot inject Fields.\nPrevious error : " + e.getMessage());
+		}
 		
 		return instance;
 	}
