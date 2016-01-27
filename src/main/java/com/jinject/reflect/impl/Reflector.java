@@ -33,7 +33,7 @@ public class Reflector implements IReflector {
 				// we could break the for here but I don't to check the class for another annoted constructor and throw an exception to disallow it !
 			}
 			else if(annotation != null && constructorInjectableFound){
-				throw new BindingResolverException("You can only declare one @InjectConstructor in a class. Concerned class : " + clazz);
+				throw new BindingResolverException("Reflector : You can only declare one @InjectConstructor in a class. Concerned class : " + clazz);
 			}
 		}
 		
@@ -52,7 +52,8 @@ public class Reflector implements IReflector {
 				Object binding = null;
 				try {
 					binding = binder.getBinding(f.getType(), bindToName);
-					
+					if(binding == null)
+						throw new BindingResolverException("ReflectorMAN : There is no binding for [" + f.getType() + "] for name "+f.getName()+". \nYou probably forget to add it to the binder. " );
 					if(binding instanceof Class)
 						reflectClass((Class<?>) binding, binder);
 					else
@@ -61,10 +62,10 @@ public class Reflector implements IReflector {
 					injectorBinding.addBinding(f, binding);
 				}
 				catch(BindingResolverException e){
-					throw new BindingResolverException("There is no binding for [" + f.getType() + "] for name "+f.getName()+". \nYou probably forget to add it to the binder. \nPrevious error : " + e.getMessage());
+					throw new BindingResolverException("Reflector : There is no binding for [" + f.getType() + "] for name "+f.getName()+". \nYou probably forget to add it to the binder. \nPrevious error : " + e.getMessage());
 				}
 				catch(ClassCastException e){
-					throw new BindingResolverException("Looks like a cast gone bad : " + f.getType() + " => " + e.getMessage());
+					throw new BindingResolverException("Reflector : Looks like a cast gone bad : " + f.getType() + " => " + e.getMessage());
 				}
 			}
 		}

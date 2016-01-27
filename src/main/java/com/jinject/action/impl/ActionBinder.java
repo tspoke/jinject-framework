@@ -1,5 +1,8 @@
 package com.jinject.action.impl;
 
+import java.lang.reflect.Field;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Map.Entry;
 
 import com.jinject.action.api.IAction;
@@ -11,6 +14,7 @@ import com.jinject.event.api.IEvent;
 import com.jinject.event.api.IListener;
 import com.jinject.inject.api.IInjector;
 import com.jinject.inject.exception.InjectionException;
+import com.jinject.inject.impl.InjectorBindingMapper;
 
 /**
  * The ActionBinder is a special implementation of a binder who is designed to bind Event to Actions.
@@ -48,33 +52,52 @@ public class ActionBinder extends Binder implements IActionBinder {
 			}
 		}
 		else if(!(object instanceof Class) && !bindings.containsKey(object))
-			addListenerOnEvent(object);
+			addListenerOnEvent((IEvent) object);
 		
 		return resolveBinding(object);
 	}
 	
-	private void addListenerOnEvent(final Object eventInstance){
+	private void addListenerOnEvent(final IEvent eventInstance){
 		if(!bindings.containsKey(eventInstance)){
-			((IEvent) eventInstance).addListener(new IListener() {
+			eventInstance.addListener(new IListener() {
 				@Override
 				public void execute(Object... params) {
-					eventFired(eventInstance);
+					eventFired(eventInstance, params);
 				}
 			});
 		}
 	}
 	
 	@SuppressWarnings("unchecked")
-	private void eventFired(Object eventInstance){
+	private void eventFired(IEvent eventInstance, Object[] params){
 		ActionBinding binding = (ActionBinding) resolveBinding(eventInstance.getClass());
+		
+		// for each param we get its type and create a mapping
+		Map<Class<?>, Object> paramsToBind = new HashMap<Class<?>, Object>(params.length * 2);
+		for(Object o : params){
+			paramsToBind.put(o.getClass(), o);
+		}
+		
+		InjectorBindingMapper mapper = null;
+		Map<Field, Object> notBind = null;
 		for(Entry<Object, Object> e : binding.getNamedBindings().entrySet()){
 			try {
-				IAction action = ((Class<? extends IAction>) e.getValue()).newInstance();
-				injector.inject(action, this);
+				mapper = injector.getMapperForClass(e.getValue(), this);
+				IAction action = null;
+				
+				if(mapper.isConstructorInjectable())
+					action = (IAction) injector.injectConstructor(action, this, mapper.getConstructor(), mapper.getBindingsForConstructor());
+				else {
+					action = ((Class<? extends IAction>) e.getValue()).newInstance();
+				}
+				
+				notBind = injector.injectTypesWithInstances(action, mapper.getBindingsForFields(), paramsToBind);
+				injector.injectFields(action, this, notBind, true);
+				
 				action.execute();
 			} 
 			catch (IllegalArgumentException | IllegalAccessException | InstantiationException | BindingResolverException e1) {
-				throw new InjectionException("Cannot cast and inject into : " + e.getValue() + ". Initial error : " + e1.getMessage());
+				throw new InjectionException("ActionBinder : Cannot cast and inject into : " + e.getValue() + ". \nPrevious error : " + e1.getClass() + " => " + e1.getMessage());
 			}
 		}
 	}

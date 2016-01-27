@@ -4,6 +4,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -35,6 +36,63 @@ public class Injector implements IInjector {
 		this.reflector = reflector;
 	}
 	
+	@Override
+	public Map<Field, Object> injectTypesWithInstances(Object instance, Map<Field, Object> mapping, Map<Class<?>, Object> bindings) throws IllegalArgumentException, IllegalAccessException{
+		Map<Field, Object> notBind = new HashMap<>();
+		
+		for(Entry<Field, Object> f : mapping.entrySet()){
+			Object expected = f.getValue();
+			Object toBind = null;
+			
+			if(expected instanceof Class && bindings.containsKey(expected)){
+				f.getKey().set(instance, bindings.get(expected));
+			}
+			else 
+				notBind.put(f.getKey(), f.getValue());
+		}
+		return notBind;
+	}
+	
+	@Override
+	public void injectFields(Object instance, IBinder binder, Map<Field, Object> mapping, boolean recursiveInjection) throws IllegalArgumentException, IllegalAccessException, InstantiationException, BindingResolverException{
+		for(Entry<Field, Object> f : mapping.entrySet()){
+			Object expected = f.getValue();
+			Object toBind = null;
+			
+			if(expected instanceof Class && !((Class<?>) expected).isPrimitive())
+				toBind = ((Class<?>) expected).newInstance();
+			/*else if(expected instanceof Class && ((Class<?>) expected).isPrimitive())
+				toBind = ClassUtils.primitiveToWrapper(expected);
+				*/ 
+			else 
+				toBind = expected;
+			
+			if(recursiveInjection)
+				inject(toBind, binder); // recursive
+			
+			f.getKey().set(instance, toBind);
+		}
+	}
+	
+	@Override
+	public Object injectConstructor(Object object, IBinder binder, Constructor<?> constructor, List<Class<?>> bindings) throws BindingResolverException, InstantiationException, IllegalAccessException, IllegalArgumentException{
+		Object[] objs = new Object[bindings.size()];
+		int i = 0;
+		for(Class<?> param : bindings){
+			Object o = binder.getBinding(param);
+			o = inject(o, binder);
+			objs[i++] = o;
+		}
+		
+		try {
+			return constructor.newInstance(objs);
+		} 
+		catch (InvocationTargetException e) {
+			throw new BindingResolverException("Failed trying to instantiate object with its constructor @InjectConstructor." + "\nInitial InvocationTargetException message : " + e.getMessage());
+		}
+	}
+	
+	
 
 	@Override
 	public Object inject(Object object, InjectorBindingMapper mapper, IBinder binder) throws IllegalArgumentException, IllegalAccessException, InstantiationException, BindingResolverException {
@@ -46,20 +104,7 @@ public class Injector implements IInjector {
 		Object instance = null;
 		// construct object if class
 		if(object instanceof Class && mapper.isConstructorInjectable()){
-			Object[] objs = new Object[mapper.getBindingsForConstructor().size()];
-			int i = 0;
-			for(Class<?> param : mapper.getBindingsForConstructor()){
-				Object o = binder.getBinding(param);
-				o = inject(o, binder);
-				objs[i++] = o;
-			}
-			
-			try {
-				instance = mapper.getConstructor().newInstance(objs);
-			} 
-			catch (InvocationTargetException e) {
-				throw new BindingResolverException("Failed trying to instantiate object with its constructor @InjectConstructor." + "\nInitial InvocationTargetException message : " + e.getMessage());
-			}
+			instance = injectConstructor(object, binder, mapper.getConstructor(), mapper.getBindingsForConstructor());
 		}
 		else if(object instanceof Class)
 			instance = ((Class<?>) object).newInstance();
@@ -67,49 +112,17 @@ public class Injector implements IInjector {
 			instance = object;
 		
 		// Fields
-		Map<Field, Object> mapping = mapper.getBindingsForFields();
-		for(Entry<Field, Object> f : mapping.entrySet()){
-			Object expected = f.getValue();
-			Object toBind = null;
-			
-			if(expected instanceof Class)
-				toBind = ((Class<?>) expected).newInstance();
-			else 
-				toBind = expected;
-			
-			inject(toBind, binder); // recursive
-			f.getKey().set(instance, toBind);
-		}
+		injectFields(instance, binder, mapper.getBindingsForFields(), true);
+		
 		return instance;
 	}
 
 	
 	@Override
 	public Object inject(Object object, IBinder binder) throws InstantiationException, BindingResolverException, IllegalArgumentException, IllegalAccessException {
-		InjectorBindingMapper injectorBinding = null;
-		Class<?> clazz = (object instanceof Class) ? (Class<?>) object : object.getClass();
-		
-		if(mappers.containsKey(clazz))
-			injectorBinding = mappers.get(clazz);
-		else 
-			injectorBinding = reflector.reflectClass(clazz, binder);
-		
-		return inject(object, injectorBinding, binder);
+		return inject(object, getMapperForClass(object, binder), binder);
 	}
 	
-	/*
-	@Override
-	public Object inject(Object object) throws IllegalArgumentException, IllegalAccessException, InstantiationException{
-		InjectorBindingMapper injectorBinding = null;
-		Class<?> clazz = (object instanceof Class) ? (Class<?>) object : object.getClass();
-		injectorBinding = mappers.get(clazz);
-		
-		if(injectorBinding == null)
-			throw new IllegalArgumentException("The injector can't determine the mapper to inject in this object ["+object+"]. Consider calling the (Object, IBinder) version instead.");
-		
-		return inject(object, injectorBinding);
-	}
-	*/
 
 	@Override
 	public boolean register(Class<?> o, IBinder binder) throws InstantiationException, IllegalAccessException, BindingResolverException {
@@ -118,6 +131,17 @@ public class Injector implements IInjector {
 		
 		mappers.put((Class<?>)o, reflector.reflectClass((Class<?>) o, binder));
 		return true;
+	}
+
+
+	@Override
+	public InjectorBindingMapper getMapperForClass(Object object, IBinder binder) throws InstantiationException, IllegalAccessException, BindingResolverException {
+		Class<?> clazz = (object instanceof Class) ? (Class<?>) object : object.getClass();
+		
+		if(!mappers.containsKey(clazz))
+			mappers.put(clazz, reflector.reflectClass(clazz, binder));
+		
+		return mappers.get(clazz);
 	}
 	
 }

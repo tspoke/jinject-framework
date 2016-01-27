@@ -1,6 +1,9 @@
 package com.jinject.inject.api;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
 import java.util.List;
+import java.util.Map;
 
 import com.jinject.bind.api.IBinder;
 import com.jinject.bind.exception.BindingResolverException;
@@ -58,10 +61,51 @@ public interface IInjector {
 	 * @throws InstantiationException 
 	 */
 	boolean register(Class<?> clazz, IBinder binder) throws InstantiationException, IllegalAccessException, BindingResolverException;
-
-
-
-
-
 	
+	/**
+	 * Get the mapper for the specified class
+	 * @param clazz
+	 * @return
+	 * @throws BindingResolverException 
+	 * @throws IllegalAccessException 
+	 * @throws InstantiationException 
+	 */
+	InjectorBindingMapper getMapperForClass(Object object, IBinder binder) throws InstantiationException, IllegalAccessException, BindingResolverException;
+	
+	/**
+	 * Try to instantiate & inject an object via its annoted constructor.
+	 * @param object
+	 * @param binder
+	 * @param constructor
+	 * @param bindings
+	 * @return
+	 * @throws BindingResolverException
+	 * @throws InstantiationException
+	 * @throws IllegalAccessException
+	 * @throws IllegalArgumentException
+	 */
+	Object injectConstructor(Object object, IBinder binder, Constructor<?> constructor, List<Class<?>> bindings) throws BindingResolverException, InstantiationException, IllegalAccessException, IllegalArgumentException;
+	
+	/**
+	 * Inject an instance for these specifies fields
+	 * @param instance
+	 * @param binder
+	 * @param mapping
+	 * @throws IllegalArgumentException
+	 * @throws IllegalAccessException
+	 * @throws InstantiationException
+	 * @throws BindingResolverException
+	 */
+	void injectFields(Object instance, IBinder binder, Map<Field, Object> mapping, boolean recursiveInjection) throws IllegalArgumentException, IllegalAccessException, InstantiationException, BindingResolverException;
+	
+	/**
+	 * Inject specific instances to an object and return all not injected fields
+	 * @param instance
+	 * @param mapping
+	 * @param bindings
+	 * @return
+	 * @throws IllegalArgumentException
+	 * @throws IllegalAccessException
+	 */
+	Map<Field, Object> injectTypesWithInstances(Object instance, Map<Field, Object> mapping, Map<Class<?>, Object> bindings) throws IllegalArgumentException, IllegalAccessException;
 }

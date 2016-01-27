@@ -52,7 +52,7 @@ public class BindingSystemTest {
 		Assert.assertEquals(AA.getValue(), 100);
 	}
 
-	@Test(expected=BindingResolverException.class)
+	@Test
 	public void bindingSimpleByValueByNameTryGotByDefault() throws InstantiationException, IllegalAccessException, BindingResolverException{
 		IBinder binder = new Binder();
 		
@@ -61,7 +61,7 @@ public class BindingSystemTest {
 		A.str = "A";
 		
 		binder.bind(IModel.class).to(A).toName("test");
-		binder.getBinding(IModel.class); // throw an exception because defaultValue IS NOT nameValue. It's a choice :)
+		Assert.assertEquals(binder.getBinding(IModel.class), IModel.class); // false because it's not the default
 	}
 	
 	@Test

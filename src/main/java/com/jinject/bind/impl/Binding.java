@@ -57,8 +57,10 @@ public class Binding implements IBinding {
 	public Object getBinding(Object name) throws BindingResolverException, InstantiationException, IllegalAccessException {
 		if(bindings.containsKey(name) && bindings.get(name) != null)
 			return bindings.get(name);
-		else
-			throw new BindingResolverException("There is no binding for this key name");
+		else { 
+			return key;// should I ?
+			//throw new BindingResolverException("There is no binding for this key name");
+		}
 	}
 
 	@Override
