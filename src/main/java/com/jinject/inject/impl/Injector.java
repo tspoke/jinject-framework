@@ -45,10 +45,9 @@ public class Injector implements IInjector {
 		for(Entry<Field, Object> f : mapping.entrySet()){
 			Object expected = f.getValue();
 			
-			if(expected instanceof Class && bindings.containsKey(expected)){
+			if(expected instanceof Class && bindings.containsKey(expected))
 				f.getKey().set(instance, bindings.get(expected));
-			}
-			else 
+			else
 				notBind.put(f.getKey(), f.getValue());
 		}
 		return notBind;

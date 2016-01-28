@@ -18,10 +18,13 @@ public class BinaryEvent<T, U> extends AbstractEvent {
 	public void fire(Object... params) {
 		if(params.length != 2)
 			throw new EventException("Wrong number of params in event dispatching, expected 2 given " + params.length);
+		
 		fire((T) params[0], (U) params[1]);
 	}
 	
 	public void fire(T param, U param2){
+		System.out.println(param);
+		System.out.println("=>" + param2);
 		super.fire(param, param2);
 	}
 }

@@ -88,9 +88,8 @@ public class ActionBinder extends Binder implements IActionBinder {
 				
 				if(mapper.isConstructorInjectable())
 					action = (IAction) injector.injectConstructor(action, this, mapper.getConstructor(), mapper.getBindingsForConstructor());
-				else {
+				else
 					action = ((Class<? extends IAction>) e.getValue()).newInstance();
-				}
 				
 				notBind = injector.injectTypesWithInstances(action, mapper.getBindingsForFields(), paramsToBind);
 				injector.injectFields(action, this, notBind, true);

@@ -117,7 +117,7 @@ binder.bind("Hi jack").to(instanceObject);  // String to an instance...
 binder.bind("me").to("Thibaud Giovannetti"); // String to string
 ```
 
-# Events
+# Events & Actions
 Events is a way to execute specials actions previously binded. For instance, you can bind a ItemPickedUpEvent to a special action who will add life to the player.
 JInject implements some events, but due to the implementation of the java langage their usage is not trivial at this time.
 
@@ -125,17 +125,42 @@ JInject implements some events, but due to the implementation of the java langag
 ActionBinder actionBinder = new ActionBinder(new Injector(new Reflector())); // most of the time you won't do this cause it's already done in Context
 actionBinder.bind(MySpecialEvent.class).to(MyAction.class);
 
+// Declarations (differents files)
+// events
+class Events {
+	public static class MySimpleEvent extends SimpleEvent {}
+	public static class MyUnaryEvent extends UnaryEvent<String> {}
+	public static class MyBinaryTestEvent extends BinaryEvent<String, Integer> {}
+	public static class MyBinaryTestComplexEvent extends BinaryEvent<String, IOther> {}
+	public static class MyBinaryTestComplexInheritedEvent extends BinaryEvent<String, Other> {}
+	public static class MyTernaryTestEvent extends BinaryEvent<String, Integer> {}
+}
+
+// implementation of the MyAction class
+class MyAction extends AbstractAction {
+	@Inject
+	private Integer myInt;
+	
+	@Override
+	public void execute(){
+    	System.out.println("my int =  " + myInt); // display the value sent by the event
+	}
+}
+
 // in a view for example
 class MyView {
 	@Inject
 	private MySpecialEvent event; // inject the default event
 
-	public void test(){
-		event.fire(); // this will automatically instantiate a MyAction object and call it's execute method !
+	public void fireEventExample(){
+		// dispatch the event
+		event.fire(100); // this will automatically instantiate a MyAction object, inject it with the param and call it's execute method !
 	}
 }
 
 ```
+
+If you need to send custom objects throught events, you need to add them to an injectionBinder first.
 
 # View 
 Doc coming...

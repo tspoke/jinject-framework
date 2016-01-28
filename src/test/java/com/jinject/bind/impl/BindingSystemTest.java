@@ -7,6 +7,7 @@ import com.jinject.bind.api.IBinder;
 import com.jinject.bind.exception.BindingResolverException;
 import com.jinject.bind.impl.Binder;
 import com.jinject.utils.IModel;
+import com.jinject.utils.IOther;
 import com.jinject.utils.Model;
 import com.jinject.utils.MyEnum;
 import com.jinject.utils.ShipModel;
@@ -250,5 +251,28 @@ public class BindingSystemTest {
 		
 		int i = (int) binder.getBinding(199);
 		Assert.assertEquals(i, 150);
+	}
+	
+
+	
+	@Test
+	public void bindAnonymous() throws InstantiationException, IllegalAccessException, BindingResolverException {
+		IBinder binder = new Binder();
+
+		binder.bind("test").to(new IOther(){
+
+			@Override
+			public int getValue() {
+				return 500;
+			}
+
+			@Override
+			public void setValue(int value) {
+				
+			}
+		});
+		
+		IOther otherAnonymous = (IOther) binder.getBinding("test");
+		Assert.assertEquals(otherAnonymous.getValue(), 500);
 	}
 }
