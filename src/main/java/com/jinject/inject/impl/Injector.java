@@ -42,13 +42,24 @@ public class Injector implements IInjector {
 	public Map<Field, Object> injectTypesWithInstances(Object instance, Map<Field, Object> mapping, Map<Class<?>, Object> bindings) throws IllegalArgumentException, IllegalAccessException{
 		Map<Field, Object> notBind = new HashMap<>();
 		
+		FIELDS:
 		for(Entry<Field, Object> f : mapping.entrySet()){
 			Object expected = f.getValue();
 			
 			if(expected instanceof Class && bindings.containsKey(expected))
 				f.getKey().set(instance, bindings.get(expected));
-			else
+			else {
+				if(expected instanceof Class){
+					// bad performances but only way to add anonymous classes
+					for(Entry<Class<?>, Object> e : bindings.entrySet()){
+						if(!(e.getValue() instanceof Class) && ((Class<?>) expected).isAssignableFrom(e.getValue().getClass())){
+							f.getKey().set(instance, e.getValue());
+							continue FIELDS;
+						}
+					}
+				}
 				notBind.put(f.getKey(), f.getValue());
+			}
 		}
 		return notBind;
 	}
