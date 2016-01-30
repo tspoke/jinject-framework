@@ -52,7 +52,13 @@ public class Injector implements IInjector {
 				if(expected instanceof Class){
 					// bad performances but only way to add anonymous classes
 					for(Entry<Class<?>, Object> e : bindings.entrySet()){
-						if(!(e.getValue() instanceof Class) && ((Class<?>) expected).isAssignableFrom(e.getValue().getClass())){
+						// @TODO need to find a solution for anonymous classes
+						/*
+						System.out.println("k ==>" + e.getKey());
+						System.out.println("v ==>" + e.getValue());
+						System.out.println("assignable ==>" + ((Class<?>) expected).isAssignableFrom(e.getKey()));
+						*/
+						if(!(e.getValue() instanceof Class) && ((Class<?>) expected).isAssignableFrom(e.getKey())){
 							f.getKey().set(instance, e.getValue());
 							continue FIELDS;
 						}
