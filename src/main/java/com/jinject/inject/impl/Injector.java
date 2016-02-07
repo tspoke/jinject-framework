@@ -42,7 +42,7 @@ public class Injector implements IInjector {
 	public Map<Field, Object> injectTypesWithInstances(Object instance, Map<Field, Object> mapping, Map<Class<?>, Object> bindings) throws IllegalArgumentException, IllegalAccessException{
 		Map<Field, Object> notBind = new HashMap<>();
 		
-		FIELDS:
+		// FIELDS:
 		for(Entry<Field, Object> f : mapping.entrySet()){
 			Object expected = f.getValue();
 			
@@ -50,19 +50,19 @@ public class Injector implements IInjector {
 				f.getKey().set(instance, bindings.get(expected));
 			else {
 				if(expected instanceof Class){
+					/*
 					// bad performances but only way to add anonymous classes
 					for(Entry<Class<?>, Object> e : bindings.entrySet()){
 						// @TODO need to find a solution for anonymous classes
-						/*
 						System.out.println("k ==>" + e.getKey());
 						System.out.println("v ==>" + e.getValue());
 						System.out.println("assignable ==>" + ((Class<?>) expected).isAssignableFrom(e.getKey()));
-						*/
 						if(!(e.getValue() instanceof Class) && ((Class<?>) expected).isAssignableFrom(e.getKey())){
 							f.getKey().set(instance, e.getValue());
 							continue FIELDS;
 						}
 					}
+					*/
 				}
 				notBind.put(f.getKey(), f.getValue());
 			}
