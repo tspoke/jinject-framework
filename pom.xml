@@ -8,13 +8,13 @@
 
 	<packaging>jar</packaging>
 
-	<version>${version.inject}</version>
+	<version>${version.jinject}</version>
 	<name>Project JInject</name>
 
 	<url>http://jinject.com</url>
 
 	<properties>
-		<version.veinex>1.0</version.veinex>
+		<version.jinject>1.0</version.jinject>
 		<version.junit>4.11</version.junit>
 		<version.log4j>1.2.17</version.log4j>
 		<version.commons>3.2.2</version.commons>
