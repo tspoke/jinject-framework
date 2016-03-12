@@ -117,8 +117,8 @@ binder.bind("Hi jack").to(instanceObject);  // String to an instance...
 binder.bind("me").to("Thibaud Giovannetti"); // String to string
 ```
 
-# Events & Actions
-Events is a way to execute specials actions previously binded. For instance, you can bind a ItemPickedUpEvent to a special action who will add life to the player.
+# Signals (actions)
+Signals is a way to execute specials actions previously binded. For instance, you can bind a ItemPickedUpEvent to a special action who will add life to the player.
 JInject implements some events, but due to the implementation of the java langage their usage is not trivial at this time.
 
 ```java
